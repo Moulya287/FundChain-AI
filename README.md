@@ -167,3 +167,141 @@ FundChain-AI/
 ├── tsconfig.json
 ├── .gitignore
 └── README.md
+
+## Getting Started
+
+### Prerequisites
+
+Install the following before running the project:
+
+- Node.js and npm.
+- Python 3.9+.
+- Git.
+- MetaMask browser extension (configured for Localhost 8545, Chain ID 31337).
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Moulya287/FundChain-AI.git
+cd FundChain-AI
+```
+
+### 2. Install Blockchain Dependencies
+
+```bash
+npm install
+```
+
+### 3. Install Frontend Dependencies
+
+```bash
+cd frontend
+npm install
+cd ..
+```
+
+### 4. Set Up the AI Backend
+
+```bash
+cd ai-backend
+
+# Create a Python virtual environment
+python -m venv venv
+
+# Windows
+venv\Scripts\activate
+
+# Mac/Linux
+source venv/bin/activate
+
+# Install required Python packages
+pip install fastapi uvicorn scikit-learn pandas numpy joblib
+
+cd ..
+```
+
+---
+
+## Running the Project
+
+The application uses four main components that need to run simultaneously.
+
+### Terminal 1: Start the Local Blockchain
+
+From the project root:
+
+```bash
+npx hardhat node
+```
+
+Keep this terminal running.
+
+### Terminal 2: Compile and Deploy the Smart Contract
+
+```bash
+npx hardhat compile
+npx hardhat run scripts/deploy.ts --network localhost
+```
+
+Copy the deployed contract address printed in the terminal and update it in `frontend/src/contract.ts`.
+
+### Terminal 3: Start the Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+Open the local URL displayed by Vite in your browser.
+
+### Terminal 4: Start the AI Backend
+
+```bash
+cd ai-backend
+
+# Activate your virtual environment if not already activated
+# Windows: venv\Scripts\activate
+# Mac/Linux: source venv/bin/activate
+
+uvicorn train_and_serve:app --reload --port 8000
+```
+
+The AI backend should be available at:
+
+`http://localhost:8000`
+
+---
+
+## Team & Roles
+
+This project was developed as a four-member mini-project team.
+
+- **[Member 1 Name]** - Smart Contract Architecture & Solidity Development
+- **[Member 2 Name]** - React Frontend, Web3 Integration & UI/UX Design
+- **[Member 3 Name]** - Python Machine Learning Backend & Model Training
+- **[Member 4 Name]** - Access Control, Testing, Bug Fixing & Documentation
+
+---
+
+## Future Improvements
+
+- Train the AI model using larger, real-world crowdfunding datasets (e.g., Kickstarter).
+- Introduce advanced campaign verification mechanisms, such as Zero-Knowledge Proofs for proof submission.
+- Enhance application security and implement comprehensive smart contract test coverage.
+- Deploy the smart contracts to a public testnet (e.g., Sepolia) or Mainnet.
+
+---
+
+## Important Notes
+
+- The current project is configured for local blockchain development.
+- Local blockchain data is reset when the local Hardhat node is restarted.
+- MetaMask must be configured to connect to the local development network (Chain ID: 31337).
+- AI predictions depend on the trained model and the campaign information supplied to the backend.
+- The frontend contract address must match the currently deployed smart contract.
+
+---
+
+## License
+
+This project is currently available for educational and development purposes.
