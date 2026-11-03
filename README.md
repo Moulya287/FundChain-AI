@@ -272,17 +272,6 @@ The AI backend should be available at:
 
 ---
 
-## Team & Roles
-
-This project was developed as a four-member mini-project team.
-
-- **[Member 1 Name]** - Smart Contract Architecture & Solidity Development
-- **[Member 2 Name]** - React Frontend, Web3 Integration & UI/UX Design
-- **[Member 3 Name]** - Python Machine Learning Backend & Model Training
-- **[Member 4 Name]** - Access Control, Testing, Bug Fixing & Documentation
-
----
-
 ## Future Improvements
 
 - Train the AI model using larger, real-world crowdfunding datasets (e.g., Kickstarter).
