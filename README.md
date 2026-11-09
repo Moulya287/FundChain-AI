@@ -1,92 +1,292 @@
 # FundChain AI
 
-### AI-Powered Blockchain Crowdfunding with Milestone-Based Fund Management
+### AI-Driven Smart Contract Oracle for Milestone-Based Crowdfunding
 
-FundChain AI is a decentralized crowdfunding application that combines **blockchain technology and machine learning** to make crowdfunding more transparent, accountable, and data-driven.
+FundChain AI is a blockchain-based crowdfunding platform that combines smart contract escrow, AI-powered trust assessment, and cryptographically authenticated Oracle decisions to improve transparency and accountability in crowdfunding.
 
-The platform allows campaign creators to raise funds, define project milestones, submit proof of completed work, and receive funds through a milestone-based approval process. It also integrates an AI-powered Trust Engine that analyzes live campaign information and generates campaign success probability, trust scores, and recommendations.
+Unlike traditional crowdfunding platforms, where campaign creators may receive funds upfront, FundChain AI uses milestone-based escrow management. Campaign creators submit evidence of milestone completion, which is evaluated by an off-chain AI verification service. The AI generates an approval or rejection decision, which is cryptographically signed by the Oracle and verified by the Solidity smart contract before funds can be released.
+
+The platform aims to make crowdfunding more transparent through automated milestone assessment, historical trust analysis, and blockchain-enforced fund management.
 
 ---
 
 ## Table of Contents
 
 - [Problem Statement](#problem-statement)
-- [Our Solution](#our-solution)
+- [Proposed Solution](#proposed-solution)
 - [Key Features](#key-features)
-- [How It Works](#how-it-works)
-- [Technology Stack](#technology-stack)
+- [System Architecture](#system-architecture)
 - [AI Trust Engine](#ai-trust-engine)
+- [Smart Contract Oracle](#smart-contract-oracle)
+- [Fund Release Mechanism](#fund-release-mechanism)
+- [Technology Stack](#technology-stack)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
 - [Running the Project](#running-the-project)
-- [Team & Roles](#team--roles)
-- [Future Improvements](#future-improvements)
+- [Research Contributions](#research-contributions)
+- [Future Enhancements](#future-enhancements)
+- [Limitations](#limitations)
 
 ---
 
 ## Problem Statement
 
-Traditional crowdfunding platforms can make it difficult for contributors to track how collected funds are being used. Common challenges include:
-- Limited transparency regarding fund utilization.
-- Difficulty tracking campaign progress.
-- Lack of structured verification of project milestones.
-- Uncertainty about campaign credibility and likelihood of success.
+Traditional crowdfunding platforms face challenges related to transparency, accountability, and verification of fund utilisation.
 
-FundChain AI aims to address these challenges through blockchain-based fund management and AI-assisted campaign analysis.
+Some major issues include:
 
-## Our Solution
+- Campaign creators may receive collected funds without completing their promised objectives.
+- Contributors may have limited visibility into how campaign funds are utilised.
+- Manual milestone approval and voting mechanisms can be subjective and vulnerable to manipulation.
+- Blockchain transactions provide financial transparency but cannot independently verify real-world activities.
+- Existing campaign assessments may not adequately consider a creator's historical behaviour over time.
 
-FundChain AI introduces a milestone-based crowdfunding model. Instead of treating the collected amount as immediately available to the campaign creator, the platform organizes fund distribution around predefined milestones.
+FundChain AI addresses these challenges by combining blockchain-based escrow management with AI-assisted milestone assessment and authenticated Oracle communication.
 
-Campaign creators submit proof when a milestone is completed. Eligible contributors can participate in the milestone voting process. Once the milestone is approved and finalized, the corresponding funds can be released according to the smart contract rules. The AI Trust Engine provides additional insights by analyzing campaign activity and progress.
+## Proposed Solution
+
+FundChain AI introduces an AI-driven Smart Contract Oracle (SCO) mechanism for milestone-based crowdfunding.
+
+The platform follows a structured workflow:
+
+1. Campaign creators create campaigns with predefined funding goals and milestones.
+2. Contributors deposit ETH into the campaign's smart contract escrow.
+3. Campaign creators submit milestone completion proof.
+4. An off-chain AI verification service analyses the submitted information and relevant campaign history.
+5. The AI generates a trust assessment and an approval or rejection decision.
+6. The Oracle cryptographically signs the decision and communicates it to the smart contract.
+7. The smart contract verifies the Oracle signature and checks the milestone and escrow conditions.
+8. Funds are released only when the required conditions are satisfied.
+
+The proposed architecture separates AI assessment, Oracle authentication, and blockchain fund enforcement.
 
 ## Key Features
 
-### 1. Decentralized Campaign Creation
+### 1. Decentralized Crowdfunding
+
 - Create crowdfunding campaigns.
-- Specify funding goals and campaign duration.
-- Define project milestones.
+- Define funding goals and campaign durations.
+- Specify milestones and their respective fund allocations.
+- Allow contributors to support campaigns using ETH.
 
-### 2. Blockchain-Based Contributions
-- Contributors support campaigns using cryptocurrency (ETH).
-- Contributions are recorded securely through smart contract transactions.
-- Campaign funding information is retrieved in real-time from the blockchain.
+### 2. Smart Contract-Based Escrow
 
-### 3. Milestone-Based Fund Release
-- Campaign creators submit proof for completed milestones.
-- Eligible contributors vote on milestone submissions.
-- Voting results are finalized after the voting period.
-- Funds are released only when the milestone satisfies the smart contract conditions.
+- Contributions are held by the Solidity smart contract.
+- Funds are associated with predefined campaign milestones.
+- Fund release is controlled by smart contract conditions.
+- Approved milestone allocations can be transferred to campaign creators.
 
-### 4. Transparent Campaign Tracking
-- View campaign information and funding progress.
-- Track milestones and their approval status.
-- View submitted milestone proof and voting information.
+### 3. AI-Driven Milestone Assessment
 
-### 5. Role-Based Access Control
-The application dynamically distinguishes between different user roles:
-- **Campaign Owner:** Creates campaigns, manages milestones, and submits proof. *Cannot vote on their own milestones.*
-- **Contributor:** Supports campaigns and participates in eligible milestone voting.
-- **Owner-Contributor:** A campaign owner who has also contributed their own funds.
-- **Visitor:** Can view publicly available campaign information and AI analytics.
+- Evaluate submitted milestone proof.
+- Validate proof text against milestone requirements.
+- Perform invoice text consistency checks.
+- Detect identical evidence submissions using SHA-256 hashing.
+- Consider historical milestone outcomes and campaign activity.
 
-### 6. AI-Powered Trust Engine
-- Predicts campaign success probability using a trained Machine Learning model.
-- Generates a campaign trust score based on milestone completion.
-- Provides dynamic recommendations based on campaign activity and progress.
-- Uses live campaign information collected directly from the blockchain.
+### 4. Dynamic AI Trust Score
+
+The Trust Engine evaluates campaign behaviour over time rather than relying only on a single snapshot.
+
+Potential assessment parameters include:
+
+- Previous milestone approval outcomes.
+- Previous milestone rejection outcomes.
+- Milestone completion delays.
+- Evidence consistency.
+- Campaign progress.
+- Historical verification results.
+
+The Trust Score is updated as new campaign events occur.
+
+### 5. Cryptographically Authenticated Oracle
+
+- AI decisions are signed using an Oracle private key.
+- The signed message includes campaign and milestone identifiers.
+- Evidence hashes bind the decision to the submitted evidence.
+- Solidity verifies the signature before accepting the decision.
+- Replay protection mechanisms help prevent reuse of old Oracle decisions.
+
+### 6. Campaign Success Prediction
+
+The platform also includes a separate machine learning model for estimating campaign success probability.
+
+This prediction is informational and is distinct from the milestone approval mechanism.
 
 ---
 
-## How It Works
+## System Architecture
 
-1. **Create a Campaign:** A creator publishes a campaign with a funding goal, duration, and milestones.
-2. **Contribute Funds:** Backers support the campaign through MetaMask. Funds are locked in the smart contract.
-3. **Submit Milestone Proof:** The creator submits evidence of completed work for a specific milestone.
-4. **Vote on Milestones:** Eligible contributors vote to approve or reject the submitted proof.
-5. **Finalize Voting:** After the time-lock period, the voting is finalized.
-6. **Release Funds:** If approved, the allocated ETH is released to the creator. If rejected, funds remain locked.
-7. **Analyze with AI:** The AI Trust Engine evaluates the live on-chain data and provides a success probability and trust score.
+The system consists of four main components.
+
+### 1. Frontend
+
+The React application provides:
+
+- Campaign creation and exploration.
+- Wallet connectivity through MetaMask.
+- ETH contribution functionality.
+- Milestone proof submission.
+- AI trust assessment display.
+- Campaign progress and milestone tracking.
+
+### 2. Blockchain Layer
+
+The Solidity smart contract manages:
+
+- Campaign creation.
+- Contributor deposits.
+- Escrow balances.
+- Milestone allocations.
+- Oracle authorization.
+- Signature verification.
+- Milestone approval and fund release.
+
+### 3. Off-Chain AI Backend
+
+The Python FastAPI backend handles:
+
+- Milestone proof processing.
+- Evidence consistency checks.
+- SHA-256 evidence hashing.
+- Historical campaign data analysis.
+- Dynamic trust assessment.
+- AI approval or rejection decisions.
+
+### 4. Oracle Communication Layer
+
+The Oracle:
+
+- Receives the AI decision.
+- Signs the structured decision payload.
+- Sends the authenticated result to the smart contract.
+- Enables the contract to verify the decision before executing the appropriate action.
+
+---
+
+## AI Trust Engine
+
+FundChain AI separates campaign success prediction from milestone trust assessment.
+
+### A. Campaign Success Prediction
+
+The existing Random Forest Classifier is trained using 5,000 synthetic campaign records.
+
+Its input features include:
+
+- Funding progress.
+- Days remaining.
+- Number of backers.
+- Approved milestones.
+- Creator contribution.
+
+The model produces a campaign success probability.
+
+This output is intended to provide additional campaign insights and does not independently authorize milestone fund release.
+
+### B. Dynamic Trust Assessment
+
+The proposed temporal Trust Engine evaluates campaign reliability using historical information.
+
+The assessment considers:
+
+| Parameter | Purpose |
+|---|---|
+| Milestone approval history | Tracks successfully completed milestones |
+| Rejection history | Tracks unsuccessful verification attempts |
+| Submission delays | Evaluates milestone completion timeliness |
+| Evidence consistency | Checks submitted information against requirements |
+| Campaign activity | Evaluates campaign progress over time |
+
+The Trust Score is updated as new milestone events and verification results are recorded.
+
+### C. Evidence Consistency Checks
+
+The current proposed mini-project approach includes:
+
+**Proof Text Validation**
+
+Checks whether submitted proof contains meaningful information and satisfies basic completeness requirements.
+
+**Keyword Matching**
+
+Compares proof text with the predefined milestone description.
+
+**Invoice Text Consistency**
+
+Extracts invoice text and compares relevant information, such as item descriptions and quantities, with milestone requirements.
+
+**SHA-256 Evidence Hashing**
+
+Generates a cryptographic hash of submitted evidence to identify identical files and bind Oracle decisions to specific evidence.
+
+These checks assess evidence consistency and integrity. They do not independently establish that a real-world activity was completed.
+
+---
+
+## Smart Contract Oracle
+
+The Smart Contract Oracle connects the off-chain AI verification service with the Solidity smart contract.
+
+The Oracle uses cryptographic signing to authenticate AI decisions.
+
+### Oracle Workflow
+
+1. The creator submits milestone evidence.
+2. The Python backend processes the submission.
+3. The AI generates an approval or rejection decision.
+4. The Oracle creates a structured decision message.
+5. The message is signed using the Oracle's private key.
+6. The signed message is submitted to the Solidity smart contract.
+7. Solidity verifies the signature using the registered Oracle address.
+
+### Cryptographic Technologies
+
+- `eth-account` for Ethereum-compatible signing.
+- `keccak256` for message hashing.
+- `ecrecover` for signer recovery and verification.
+- SHA-256 for evidence file hashing.
+
+The signed decision should include relevant identifiers, evidence hash, decision, nonce, deadline, chain ID and contract address.
+
+Signature verification authenticates the Oracle's message. It does not independently prove that the AI assessment or real-world evidence is correct.
+
+---
+
+## Fund Release Mechanism
+
+Fund release is controlled through an AI-assisted Oracle decision and smart contract validation.
+
+### Off-Chain Assessment
+
+The AI verification service evaluates:
+
+- Milestone proof completeness.
+- Evidence consistency.
+- Invoice information.
+- Historical campaign trust.
+- Previous milestone outcomes.
+- Campaign activity.
+
+The backend also obtains authoritative financial information from the blockchain to assess payout feasibility.
+
+### On-Chain Enforcement
+
+Before releasing funds, the smart contract must verify:
+
+- The Oracle signature is valid.
+- The decision corresponds to the correct campaign.
+- The decision corresponds to the correct milestone.
+- The evidence hash matches the signed evidence.
+- The Oracle decision has not already been used.
+- The signature has not expired.
+- The milestone is eligible for release.
+- Sufficient escrow funds are available.
+- The requested amount does not exceed the milestone allocation.
+
+If the authenticated decision is approved and all contract conditions pass, the milestone allocation can be released.
+
+If the decision is rejected, the funds remain in escrow according to the contract's rejection and resubmission rules.
 
 ---
 
@@ -95,39 +295,17 @@ The application dynamically distinguishes between different user roles:
 | Component | Technologies |
 |---|---|
 | Frontend | React, Vite, TypeScript |
-| Styling | Custom CSS (Dark Web3 Theme) |
+| Styling | CSS |
 | Blockchain | Solidity, Ethereum-compatible blockchain |
 | Smart Contract Development | Hardhat |
 | Blockchain Interaction | Viem |
-| Wallet | MetaMask |
-| AI / Machine Learning | Python, Scikit-Learn |
-| Machine Learning Model | Random Forest Classifier |
-| Backend | FastAPI |
-| Data Validation | Pydantic |
+| Wallet Integration | MetaMask |
+| AI / Machine Learning | Python, Scikit-learn |
+| ML Model | Random Forest Classifier |
+| AI Backend | FastAPI, Pydantic |
 | Model Storage | Joblib |
-
----
-
-## AI Trust Engine
-
-FundChain AI integrates a Machine Learning component to analyze campaign performance. The project uses a **Random Forest Classifier** trained using synthetic historical campaign data. 
-
-The model uses the following features:
-- Campaign funding progress.
-- Days remaining until deadline.
-- Number of unique backers.
-- Number of approved milestones.
-- Whether the campaign creator has contributed their own funds.
-
-**AI Outputs:**
-- **Success Probability:** An estimate of the campaign's likelihood of reaching its funding goal.
-- **Trust Score:** An assessment generated by analyzing the creator's milestone completion rate.
-- **Recommendations:** Dynamic suggestions based on current financial velocity and community engagement.
-
-### Backend API
-The FastAPI backend exposes a prediction endpoint (`POST /predict`). The frontend gathers campaign information from the blockchain and sends the relevant features to the AI backend for processing.
-
-*Note: The current model is trained on synthetic data. Its predictions are experimental and should not be interpreted as independently verified fraud detection or financial advice.*
+| Cryptographic Signing | eth-account |
+| Hashing | SHA-256, keccak256 |
 
 ---
 
@@ -137,47 +315,48 @@ The FastAPI backend exposes a prediction endpoint (`POST /predict`). The fronten
 FundChain-AI/
 │
 ├── ai-backend/
+│   ├── train_and_serve.py
 │   ├── fundchain_model.joblib
-│   └── train_and_serve.py
+│   └── requirements.txt
 │
 ├── contracts/
 │   └── FundChain.sol
+│
+├── scripts/
+│   └── deploy.ts
 │
 ├── frontend/
 │   ├── public/
 │   └── src/
 │       ├── pages/
 │       ├── utils/
-│       │   └── roles.ts
 │       ├── App.tsx
 │       ├── contract.ts
 │       └── FundChainArtifact.json
 │
-├── scripts/
-│   └── deploy.ts
-│
 ├── test/
-│
-├── artifacts/
-├── cache/
 │
 ├── hardhat.config.ts
 ├── package.json
 ├── package-lock.json
-├── tsconfig.json
 ├── .gitignore
 └── README.md
+```
+
+*Note: The structure above is illustrative. Update filenames to match the actual repository.*
+
+---
 
 ## Getting Started
 
 ### Prerequisites
 
-Install the following before running the project:
+Install the following:
 
 - Node.js and npm.
-- Python 3.9+.
+- Python 3.9 or later.
 - Git.
-- MetaMask browser extension (configured for Localhost 8545, Chain ID 31337).
+- MetaMask browser extension.
 
 ### 1. Clone the Repository
 
@@ -205,26 +384,36 @@ cd ..
 ```bash
 cd ai-backend
 
-# Create a Python virtual environment
 python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# Mac/Linux
-source venv/bin/activate
-
-# Install required Python packages
-pip install fastapi uvicorn scikit-learn pandas numpy joblib
-
-cd ..
 ```
+
+Activate the virtual environment.
+
+**Windows:**
+
+```bash
+venv\Scripts\activate
+```
+
+**Mac/Linux:**
+
+```bash
+source venv/bin/activate
+```
+
+Install the backend dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+If a `requirements.txt` file is not present, install the dependencies listed in the backend's actual imports and configuration.
 
 ---
 
 ## Running the Project
 
-The application uses four main components that need to run simultaneously.
+The application uses separate terminals for the blockchain, frontend and AI backend.
 
 ### Terminal 1: Start the Local Blockchain
 
@@ -243,7 +432,7 @@ npx hardhat compile
 npx hardhat run scripts/deploy.ts --network localhost
 ```
 
-Copy the deployed contract address printed in the terminal and update it in `frontend/src/contract.ts`.
+Update the frontend contract address with the newly deployed address if required.
 
 ### Terminal 3: Start the Frontend
 
@@ -252,45 +441,196 @@ cd frontend
 npm run dev
 ```
 
-Open the local URL displayed by Vite in your browser.
+Open the local URL displayed by Vite.
 
 ### Terminal 4: Start the AI Backend
 
 ```bash
 cd ai-backend
+```
 
-# Activate your virtual environment if not already activated
-# Windows: venv\Scripts\activate
-# Mac/Linux: source venv/bin/activate
+Activate the Python virtual environment, then run:
 
+```bash
 uvicorn train_and_serve:app --reload --port 8000
 ```
 
-The AI backend should be available at:
+The backend should be available at:
 
 `http://localhost:8000`
 
 ---
 
-## Future Improvements
+## Research Contributions
 
-- Train the AI model using larger, real-world crowdfunding datasets (e.g., Kickstarter).
-- Introduce advanced campaign verification mechanisms, such as Zero-Knowledge Proofs for proof submission.
-- Enhance application security and implement comprehensive smart contract test coverage.
-- Deploy the smart contracts to a public testnet (e.g., Sepolia) or Mainnet.
+The proposed FundChain AI framework explores the integration of:
+
+1. **Temporal Trust Assessment:** Evaluating campaign reliability using historical milestone behaviour rather than a single campaign snapshot.
+2. **Evidence Consistency Analysis:** Applying hashing and structured text checks to improve evidence integrity and consistency.
+3. **AI-Driven Oracle Decisions:** Using off-chain AI assessments to generate milestone approval or rejection decisions.
+4. **Cryptographic Decision Authentication:** Binding signed Oracle decisions to specific campaign milestones and evidence.
+5. **Automated Escrow Enforcement:** Using Solidity smart contracts to enforce authenticated decisions and milestone fund-release conditions.
+
+These contributions should be evaluated against existing research to establish their novelty and effectiveness.
 
 ---
 
-## Important Notes
+## Roadmap & Future Enhancements
 
-- The current project is configured for local blockchain development.
-- Local blockchain data is reset when the local Hardhat node is restarted.
-- MetaMask must be configured to connect to the local development network (Chain ID: 31337).
-- AI predictions depend on the trained model and the campaign information supplied to the backend.
-- The frontend contract address must match the currently deployed smart contract.
+### 1. Advanced Evidence Verification
+
+**Current direction:**
+- SHA-256 evidence hashing.
+- Duplicate evidence detection.
+- Basic proof text validation.
+- Invoice text consistency checks.
+
+**Future work:**
+- Computer vision for image-content analysis.
+- Vision-Language Models for milestone evidence assessment.
+- Advanced OCR and document understanding.
+- Detection of manipulated or inconsistent evidence.
+
+### 2. Decentralized Oracle Network
+
+**Current direction:**
+- A Python-based Oracle service signs AI decisions.
+
+**Future work:**
+- Integrate decentralized Oracle networks.
+- Introduce multiple independent verification nodes.
+- Explore consensus-based Oracle decisions.
+- Reduce dependence on a single Oracle operator.
+
+### 3. Advanced Temporal Trust Modelling
+
+**Current direction:**
+- Historical milestone outcomes.
+- Submission delays.
+- Evidence consistency.
+- Dynamic trust assessment.
+
+**Future work:**
+- Explore time-series machine learning models.
+- Introduce explainable AI.
+- Evaluate trust-score stability and reliability.
+- Develop robust historical behaviour analysis.
+## Future Enhancement: AI-Powered Milestone Proof Verification
+
+### Vision
+
+FundChain AI is designed to evolve beyond basic proof validation and trust scoring toward a more comprehensive, AI-driven milestone evidence verification framework.
+
+The next proposed development phase focuses on evaluating whether submitted evidence is consistent with the actual requirements of a crowdfunding milestone.
+
+### Proposed Capabilities
+
+**1. Computer Vision-Based Evidence Analysis**
+- Analyse photographs submitted by campaign creators.
+- Detect relevant objects, equipment, and infrastructure using models such as YOLO.
+- Compare detected visual elements with milestone requirements.
+
+**2. OCR-Based Invoice and Document Verification**
+- Extract information from invoices, receipts, and reports.
+- Identify quantities, amounts, dates, and item descriptions.
+- Compare extracted details with milestone requirements and other submitted evidence.
+
+**3. NLP-Based Proof Validation**
+- Analyse the meaning of submitted proof descriptions.
+- Measure semantic similarity between milestone objectives and submitted explanations.
+- Identify incomplete, irrelevant, or inconsistent descriptions.
+
+**4. Duplicate and Suspicious Evidence Detection**
+- Detect repeated evidence using cryptographic hashes.
+- Explore image similarity techniques to identify visually similar submissions.
+- Flag inconsistencies across multiple submissions.
+
+**5. Multimodal AI Verification**
+- Combine information from images, documents, and text.
+- Evaluate consistency between different forms of evidence.
+- Generate an explainable evidence assessment for the AI Trust Engine.
+
+**6. Integration with the Temporal AI Trust Engine**
+- Combine current evidence assessments with historical campaign behaviour.
+- Update trust assessments as new milestone evidence becomes available.
+- Use the resulting assessment to inform the AI Oracle's milestone approval or rejection decision.
+
+### Proposed Verification Workflow
+
+```text
+Campaign Creator
+       |
+       v
+Uploads Milestone Evidence
+(Images / Invoices / Reports / Text)
+       |
+       v
+AI-Based Evidence Verification
+       |
+       |-- Computer Vision
+       |-- OCR
+       |-- NLP
+       |-- Duplicate Detection
+       |-- Cross-Document Consistency
+       |
+       v
+Temporal AI Trust Engine
+       |
+       v
+AI Milestone Decision
+       |
+       v
+Cryptographically Authenticated Oracle
+       |
+       v
+Solidity Smart Contract
+       |
+       v
+Escrow Fund Release
+(Only if required checks pass)
+```
+
+### Research Direction
+
+This enhancement aims to investigate how multimodal artificial intelligence, temporal trust assessment, and blockchain-based escrow can be integrated to improve the reliability and transparency of milestone-based crowdfunding.
+
+### Limitations
+
+AI-based evidence analysis cannot independently guarantee that submitted photographs or documents represent genuine real-world milestone completion. Future research may incorporate independent verification, authenticated IoT data, and external inspection mechanisms.
+
+**Development Status:** Planned / Future Research and Implementation.### 4. Real-World Training Data
+
+**Current direction:**
+- Random Forest trained using synthetic campaign data.
+
+**Future work:**
+- Evaluate larger real-world crowdfunding datasets.
+- Develop independently labelled milestone verification datasets.
+- Compare multiple machine learning approaches.
+- Measure false approval and false rejection rates.
+
+### 5. Privacy-Preserving Evidence Verification
+
+Explore Zero-Knowledge Proofs and privacy-preserving verification techniques to protect sensitive contributor and campaign information.
+
+### 6. Public Blockchain Deployment
+
+Explore deployment to a public test network such as Sepolia, followed by security testing and evaluation before any mainnet deployment.
+
+---
+
+## Limitations
+
+- The current Random Forest success prediction model uses synthetic training data.
+- SHA-256 hashing detects identical files and supports evidence integrity but does not verify the truthfulness of photographs or invoices.
+- Keyword matching and invoice text checks cannot independently prove real-world milestone completion.
+- A cryptographically signed Oracle message establishes the origin and integrity of a decision, not the correctness of the AI assessment.
+- A single Oracle service introduces a central point of trust and potential failure.
+- AI predictions can produce false approvals and false rejections.
+- Further testing with independently labelled real-world evidence is necessary to evaluate reliability.
 
 ---
 
 ## License
 
-This project is currently available for educational and development purposes.
+This project is developed for educational and research purposes. A formal open-source license can be added when one is selected.
